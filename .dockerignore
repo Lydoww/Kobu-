@@ -16,12 +16,6 @@ README.md
 Dockerfile.dev
 docker-compose.dev.yaml
 
-# Environment files (should be handled separately)
-.env
-.env.local
-.env.development
-.env.production
-
 # IDE and editor files
 .vscode
 .idea
