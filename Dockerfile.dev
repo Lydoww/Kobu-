@@ -2,16 +2,18 @@ FROM node:20-alpine
 
 WORKDIR /usr/src/app
 
-RUN apk add --no-cache openssl
+RUN apk add --no-cache openssl netcat-openbsd curl
 
 COPY package.json package-lock.json ./
 COPY prisma ./prisma/
+COPY start.sh ./
 
-RUN npm install
-RUN npx prisma generate
+RUN npm install && \
+    npx prisma generate && \
+    chmod +x start.sh 
 
 COPY . .
 
 EXPOSE 3000
 
-CMD ["npm", "run", "dev"]
+CMD ["./start.sh"]

@@ -10,9 +10,17 @@ services:
     volumes:
       - ./src:/usr/src/app/src
       - ./prisma:/usr/src/app/prisma
+      - /usr/src/app/node_modules
     depends_on:
       postgres:
         condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f http://localhost:3000/health || exit 1']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s 
+    restart: unless-stopped 
 
   postgres:
     image: postgres:16
@@ -23,10 +31,11 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}']
+      test: ['CMD-SHELL', 'pg_isready -U $POSTGRES_USER -d $POSTGRES_DB']
       interval: 5s
       timeout: 5s
       retries: 10
+      start_period: 10s
 
 volumes:
   postgres_data:
